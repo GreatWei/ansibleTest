@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  remote_user: zhang
+  gather_facts: no
+  tasks:
+  - shell: "echo register_var_in_play1"
+    register: shellreturn
+ 
+- hosts: localhost
+  remote_user: zhang
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{hostvars.localhost.shellreturn.stdout}}"
+
+
+
+- hosts: localhost,ubuntu
+  remote_user: zhang
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{play_hosts}}"

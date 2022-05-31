@@ -1,0 +1,4 @@
+ansible localhost -m debug -a "msg={{ansible_version}}"
+ansible test70 -m debug -a "msg={{groups}}"
+ansible test70 -m debug -a "msg={{groups.test}}"
+ansible test70 -m debug -a "msg={{groups['test']}}"

@@ -1,0 +1,48 @@
+---
+- hosts: localhost
+  remote_user: zhang
+  tasks:
+  - set_fact:
+      testvar: "testtest"
+  - debug:
+      msg: "{{testvar}}"
+
+
+- hosts: localhost
+  remote_user: root
+  vars:
+    testvar1: test1_string
+  tasks:
+  - shell: "echo test2_string"
+    register: shellreturn
+  - set_fact:
+      testsf1: "{{testvar1}}"
+      testsf2: "{{shellreturn.stdout}}"
+  - debug:
+      msg: "{{testsf1}} {{testsf2}}"
+      
+      
+      
+
+- hosts: localhost
+  remote_user: zhang
+  vars:
+    testvar3: tv3
+  tasks:
+  - shell: "echo tv4"
+    register: testvar4
+  - debug:
+      msg: "{{testvar3}} -- {{testvar4.stdout}}"
+ 
+- hosts: localhost
+  remote_user: zhang
+  tasks:
+  - name: other play get testsf1
+    debug:
+      msg: "{{testsf1}}"
+  - name: other play get testsf2
+    debug:
+      msg: "{{testsf2}}"
+  - name: other play get register
+    debug:
+      msg: "{{shellreturn.stdout}}"
