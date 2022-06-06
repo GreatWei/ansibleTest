@@ -1,0 +1,83 @@
+---
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+      alice: female
+      bob: male
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_dict: "{{users}}"
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+      alice: female
+      bob: male
+  tasks:
+  - debug:
+      msg: "User name: {{item.key}} , User's gender: {{item.value}} "
+    with_dict: "{{users}}"
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+      alice:
+        name: Alice Appleworth
+        gender: female
+        telephone: 123-456-7890
+      bob:
+        name: Bob Bananarama
+        gender: male
+        telephone: 987-654-3210
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_dict: "{{users}}"
+    
+    
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+      alice:
+        name: Alice Appleworth
+        gender: female
+        telephone: 123-456-7890
+      bob:
+        name: Bob Bananarama
+        gender: male
+        telephone: 987-654-3210
+  tasks:
+  - debug:
+      msg: "User {{ item.key }} is {{ item.value.name }}, Gender: {{ item.value.gender }}, Tel: {{ item.value.telephone }}"
+    with_dict: "{{users}}"
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+    - name: bob
+      gender: male
+      hobby:
+        - Skateboard
+        - VideoGame
+    - name: alice
+      gender: female
+      hobby:
+        - Music
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_subelements:
+    - "{{users}}"
+    - hobby

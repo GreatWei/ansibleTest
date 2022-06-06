@@ -1,0 +1,58 @@
+---
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_indexed_items:
+    - test1
+    - test2
+    - test3
+    
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "index is : {{ item.0 }} , value is {{ item.1 }}"
+    with_indexed_items:
+    - test1
+    - test2
+    - test3
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "index is : {{ item.0 }} , value is {{ item.1 }}"
+    with_indexed_items:
+    - [ test1, test2 ]
+    - [ test3, test4, test5 ]
+    - [ test6, test7 ]
+    
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_indexed_items:
+    - [ test1, test2 ]
+    - [ test3, [ test4, test5 ] ]
+    - [ test6 ]
+    
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_flattened:
+    - [ test1, test2 ]
+    - [ test3, [ test4, test5 ] ]
+    - [ test6 ]

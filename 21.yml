@@ -1,0 +1,21 @@
+---
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_cartesian:
+    - [ a, b, c ]
+    - [ test1, test2 ]
+    
+- hosts: localhost
+  remote_user: zhang
+  gather_facts: no
+  tasks:
+  - file:
+      state: directory
+      path: "/home/zhang/Desktop/ansible/{{ item.0 }}/{{ item.1 }}"
+    with_cartesian:
+    - [ a, b, c ]
+    - [ test1, test2 ]

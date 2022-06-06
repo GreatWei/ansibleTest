@@ -1,0 +1,59 @@
+---
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_sequence: start=1 end=5 stride=1
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_sequence: count=5
+    
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_sequence: start=6 end=2 stride=-2
+    
+- hosts: localhost
+  remote_user: zhang
+  gather_facts: no
+  tasks:
+  - file:
+      path: "/home/zhang/Desktop/ansible/test{{ item }}"
+      state: directory
+    with_sequence:
+      start=2
+      end=10
+      stride=2
+      
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_sequence: start=2 end=6 stride=2 format="number is %0.2f"
+    
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_random_choice:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5

@@ -1,0 +1,28 @@
+- hosts: localhost
+  remote_user: zhang
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_file:
+    - /home/zhang/Desktop/ansible/17.yml
+    - /home/zhang/Desktop/ansible/cmd.txt
+    
+    
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_fileglob:
+    - /home/zhang/Desktop/ansible/*
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_fileglob:
+    - /home/zhang/Desktop/ansible/*.???

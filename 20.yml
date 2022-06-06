@@ -1,0 +1,65 @@
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_items:
+    - [ 1, 2, 3 ]
+    - [ a, b ]
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_list:
+    - [ 1, 2, 3 ]
+    - [ a, b ]
+
+
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_flattened:
+    - [ 1, 2, 3 ]
+    - [ a, b ]
+    
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_together:
+    - [ 1, 2, 3 ]
+    - [ a, b, c ]
+    
+    
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_together:
+    - [ 1, 2 ]
+    - [ a, b, c ]
+    
+    
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{ item }}"
+    with_together:
+    - [ 1, 2, 3 ]
+    - [ a, b]

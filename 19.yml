@@ -1,0 +1,79 @@
+---
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_items:
+    - 1
+    - 2
+    - 3
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_items: [ 1, 2, 3 ]
+    
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_items:
+    - { test1: a, test2: b }
+    - { test1: c, test2: d }
+
+- hosts: localhost
+  remote_user: zhang
+  gather_facts: no
+  vars:
+    dirs:
+    - "/home/zhang/Desktop/ansible/a"
+    - "/home/zhang/Desktop/ansible/b"
+    - "/home/zhang/Desktop/ansible/c"
+    - "/home/zhang/Desktop/ansible/d"
+  tasks:
+  - file:
+      path: "{{item}}"
+      state: touch
+    with_items: "{{dirs}}"
+    
+    
+    
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - shell: "ls /home/zhang/Desktop/ansible"
+    register: returnvalue
+  - debug:
+      var: returnvalue
+      
+      
+      
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - shell: "{{item}}"
+    with_items:
+    - "ls /home/zhang/Desktop/ansible"
+    - "ls /home"
+    register: returnvalue
+  - debug:
+      var: returnvalue
+      
+      
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - shell: "{{item}}"
+    with_items:
+    - "ls /home/zhang/Desktop/ansible"
+    - "ls /home"
+    register: returnvalue
+  - debug:
+      msg: "{{item.stdout}}"
+    with_items: "{{returnvalue.results}}"
