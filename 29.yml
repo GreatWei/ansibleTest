@@ -1,0 +1,55 @@
+---
+- hosts: localhost
+  remote_user: root
+  tasks:
+  - debug:
+      msg: "1"
+  - debug:
+      msg: "2"
+ # - fail:
+  - debug:
+      msg: "3"
+  - debug:
+      msg: "4"
+      
+- hosts: localhost
+  remote_user: root
+  tasks:
+  - debug:
+      msg: "1"
+  #- fail:
+      msg: "Interrupt running playbook"
+  - debug:
+      msg: "2"
+      
+- hosts: localhost
+  remote_user: root
+  tasks:
+  - shell: "echo 'This is a string for testing--error'"
+    register: return_value
+ # - fail:
+#      msg: "'error' in return_value.stdout"
+#    when: "'error' in return_value.stdout"
+  - debug:
+      msg: "I never execute,Because the playbook has stopped"
+      
+      
+      
+- hosts: localhost
+  remote_user: root
+  tasks:
+  - debug:
+      msg: "I execute normally"
+  - shell: "echo 'This is a string for testing error'"
+    register: return_value
+   # failed_when: ' "error" in return_value.stdout'
+  - debug:
+      msg: "I never execute,Because the playbook has stopped"
+      
+      
+- hosts: localhost
+  remote_user: root
+  tasks:
+  - debug:
+      msg: "test message"
+    changed_when: 2 > 1

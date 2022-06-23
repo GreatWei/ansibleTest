@@ -1,0 +1,188 @@
+---
+- hosts: localhost
+  remote_user: root
+  vars:
+    testpath: /testdir
+  tasks:
+  - debug:
+      msg: "file exist"
+    when: not testpath is exists
+    
+- hosts: localhost
+  remote_user: root
+  vars:
+    testpath: /testdir
+  tasks:
+  - debug:
+      msg: "file exist"
+    when: testpath is not exists
+      
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testvar: "test"
+    testvar1:
+  tasks:
+  - debug:
+      msg: "Variable is defined"
+    when: testvar is defined
+  - debug:
+      msg: "Variable is undefined"
+    when: testvar2 is undefined
+  - debug:
+      msg: "The variable is defined, but there is no value"
+    when: testvar1 is none
+    
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    doshell: "yes"
+  tasks:
+  - shell: "cat /testdir/abc"
+    when: doshell == "yes"
+    register: returnmsg
+    ignore_errors: true
+  - debug:
+      msg: "success"
+    when: returnmsg is success
+  - debug:
+      msg: "failed"
+    when: returnmsg is failure
+  - debug:
+      msg: "changed"
+    when: returnmsg is change
+  - debug:
+      msg: "skip"
+    when: returnmsg is skip
+    
+    
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testpath1: "/testdir/test"
+    testpath2: "/testdir/"
+    testpath3: "/testdir/testsoftlink"
+    testpath4: "/testdir/testhardlink"
+    testpath5: "/boot"
+  tasks:
+  - debug:
+      msg: "file"
+    when: testpath1 is file
+  - debug:
+      msg: "directory"
+    when: testpath2 is directory
+  - debug:
+      msg: "link"
+    when: testpath3 is link
+  - debug:
+      msg: "link"
+    when: testpath4 is link
+  - debug:
+      msg: "mount"
+    when: testpath5 is mount
+  - debug:
+      msg: "exists"
+    when: testpath1 is exists
+    
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    str1: "abc"
+    str2: "ABC"
+  tasks:
+  - debug:
+      msg: "This string is all lowercase"
+    when: str1 is lower
+  - debug:
+      msg: "This string is all uppercase"
+    when: str2 is upper
+    
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    num1: 4
+    num2: 7
+    num3: 64
+  tasks:
+  - debug:
+      msg: "An even number"
+    when: num1 is even
+  - debug:
+      msg: "An odd number"
+    when: num2 is odd
+  - debug:
+      msg: "Can be divided exactly by"
+    when: num3 is divisibleby(8)
+    
+    
+- hosts: localhost
+  remote_user: root
+  vars:
+    ver: 7.4.1708
+    ver1: 7.4.1707
+  tasks:
+  - debug:
+      msg: "This message can be displayed when the ver is greater than ver1"
+    when: ver is version(ver1,">")
+  - debug:
+      msg: "system version {{ansible_distribution_version}} greater than 7.3"
+    when: ansible_distribution_version is version("7.3","gt")
+    
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    a:
+    - 2
+    - 5
+    b: [1,2,3,4,5]
+  tasks:
+  - debug:
+      msg: "A is a subset of B"
+    when: a is subset(b)
+  - debug:
+      msg: "B is the parent set of A"
+    when: b is superset(a)
+    
+    
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testvar1: 1
+    testvar2: "1"
+    testvar3: a
+  tasks:
+  - debug:
+      msg: "This variable is a string"
+    when: testvar1 is string
+  - debug:
+      msg: "This variable is a string"
+    when: testvar2 is string
+  - debug:
+      msg: "This variable is a string"
+    when: testvar3 is string
+    
+    
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testvar1: 1
+    testvar2: "1"
+    testvar3: 00.20
+  tasks:
+  - debug:
+      msg: "This variable is number"
+    when: testvar1 is number
+  - debug:
+      msg: "This variable is a number"
+    when: testvar2 is number
+  - debug:
+      msg: "This variable is a number"
+    when: testvar3 is number
