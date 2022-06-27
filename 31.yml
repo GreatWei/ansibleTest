@@ -1,0 +1,72 @@
+---
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars_files:
+  - /home/zhang/Desktop/ansibleTest/testfile
+  tasks:
+  - debug:
+      msg: "{{testvar3}}"
+      # wirite vars into testfile 
+  - lineinfile:
+      path: "/home/zhang/Desktop/ansibleTest/testfile"
+      line: "testvar4: ddd"
+      #reload testfile 
+  - include_vars: "/home/zhang/Desktop/ansibleTest/testfile"
+  - debug:
+      msg: "{{testvar4}}"
+      
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+#  - include_vars:
+#      file: /home/zhang/Desktop/ansibleTest/testfile
+  - include_vars: "/home/zhang/Desktop/ansibleTest/testfile"
+  - debug:
+      msg: "{{testvar4}}"
+
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - include_vars:
+      file: /home/zhang/Desktop/ansibleTest/testfile
+      name: trans_var
+  - debug:
+      msg: "{{trans_var}}"
+      
+#  tasks:
+#  - include_vars:
+#      file: /home/zhang/Desktop/ansibleTest/test/
+#      name: trans_var
+  - debug:
+      msg: "{{trans_var.testvar4}}"
+      
+      
+- hosts: localhost
+  remote_user: root
+  gather_facts: no      
+  tasks:
+  - include_vars:
+      dir: /home/zhang/Desktop/ansibleTest/test/
+      extensions: [yaml,yml,json,varfile] #这表示指定目录中的合法文件后缀名为yaml、yml、json和varfile,同样的参数名，后面会把前面覆盖
+      ignore_files: ["^var_.*",varintest.yaml] #加载 /testdir/ansible/test/目录中的变量文件，但是所有以”var_”开头的变量文件和varintest.yaml变量文件将不会被加载
+      name: trans_var1
+  - debug:
+      msg: "{{trans_var1}}"
+      
+  tasks:
+  - include_vars:
+      dir: /home/zhang/Desktop/ansibleTest/test/
+    register: trans_var1 #include_vars模块会将载入的变量文件列表写入到自己的返回值中，这个返回值的关键字为’ansible_included_var_files’
+  - debug:
+      msg: "{{trans_var1.ansible_included_var_files}}"
+      
+      
+      
+      
+      
+      
+      
