@@ -1,0 +1,138 @@
+---
+- hosts: localhost
+  remote_user: zhang
+  gather_facts: no
+  tasks:
+  - include_vars:
+      file: "/home/zhang/Desktop/ansibleTest/wsCdnLogList"
+      name: testvar
+  - debug:
+      msg: "{{ testvar }}"
+
+- hosts: localhost
+  remote_user: zhang
+  gather_facts: no      
+  tasks:
+  - include_vars:
+      file: "/home/zhang/Desktop/ansibleTest/wsCdnLogList"
+      name: testvar
+  - debug:
+      msg: "{{ item.1.logUrl }}"
+    with_subelements:
+    - "{{testvar.logs}}"
+    - files
+      
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+    - name: bob
+      gender: 
+        - male
+        - female
+      hobby:
+        - Skateboard
+        - VideoGame
+    - name: alice
+      gender: 
+        - female
+      hobby:
+        - Music
+  tasks:
+  - debug:
+      msg: "{{ item.0 }} 's hobby is {{item.1}}"
+    with_subelements:  #将子元素的列表中的每一项作为一个整体，将其他子元素作为一个整体，然后将两个整体组合成item。
+    - "{{users}}"
+    - hobby #bob 就会输出2 项 hobby
+      
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    test:
+      users:
+      - name: tom
+        age: 18
+        hobby:
+        - Skateboard
+        - VideoGame
+      - name: jerry
+        age: 20
+        hobby:
+        - Music
+  tasks:
+  #- name: print vars json
+  - name: print vars json
+    debug:
+      msg: "{{ test | json_query(querystring) }}"
+    vars:
+      querystring: "[*].users[?name=='tom'].age"       
+      
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - include_vars:
+      file: "/home/zhang/Desktop/ansibleTest/testvarfile32"
+      name: testvar
+  - debug:
+      msg: "{{ testvar | json_query('test.users[*].hobby[*]') }}"
+      
+  tasks:
+  - include_vars:
+      file: "/home/zhang/Desktop/ansibleTest/testvarfile32"
+      name: testvar
+  - name: 表示只查找users列表中name属性等于tom的hobby信息
+    debug:
+      #为了不让引号之间互相冲突，此处使用反引号将tom引起
+      msg: "{{ testvar | json_query('test.users[?name==`tom`].hobby[*]') }}"   
+      
+  tasks:
+  - include_vars:
+      file: "/home/zhang/Desktop/ansibleTest/testvarfile32"
+      name: testvar
+  - debug:
+      msg: "{{ testvar | json_query(querystring) }}"
+    vars:
+      querystring: "test.users[?name=='tom'].age"      
+
+  tasks:
+  - include_vars:
+      file: "/home/zhang/Desktop/ansibleTest/testvarfile32"
+      name: testvar
+  - debug:
+      msg: "{{ testvar | json_query('test.users[*].{uname:name,uage:age}') }}"
+
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars_files:
+  - /home/zhang/Desktop/ansibleTest/wsCdnLogList
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_items: "{{ logs | json_query('[*].files[*].logUrl') }}"
+
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    test:
+      users:
+      - name: tom
+        age: 18
+        hobby:
+        - Skateboard
+        - VideoGame
+      - name: jerry
+        age: 20
+        hobby:
+        - Music
+  tasks:
+  - debug:
+      msg: "{{item}}"
+    with_items: "{{ test | json_query('test.users[*].hobby')}}"
