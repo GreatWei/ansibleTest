@@ -132,6 +132,7 @@
         age: 20
         hobby:
         - Music
+
   tasks:
   - debug:
       msg: "{{item}}"
