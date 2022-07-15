@@ -1,0 +1,5 @@
+# cat B.yml
+- debug:
+    msg: "{{item}}--task1 in B.yml"
+- debug:
+    msg: "{{item}}--task2 in B.yml"

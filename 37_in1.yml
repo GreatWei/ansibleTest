@@ -1,0 +1,6 @@
+# cat in1.yml
+- set_fact:
+    testnum: 1
+
+- debug:
+    msg: "task1 in in1.yml"

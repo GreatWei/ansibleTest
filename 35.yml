@@ -1,0 +1,285 @@
+---
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+      alice: female
+      bob: male
+  tasks:
+    - debug:
+        msg: "{{item.key}} is {{item.value}}"
+      loop: "{{ lookup('dict',users) }}"
+  tasks:
+    - debug:
+        msg: "{{item.key}} is {{item.value}}"
+        #users是一个字典格式的变量，它的结构是这样的
+        #    users:
+        #      alice: female
+        #      bob: male
+        #当users字典被dict2items转换处理以后，会变成如下模样
+        #    users:
+        #    - key: alice
+        #      value: female
+        #    - key: bob
+        #      value: male
+      loop: "{{ users | dict2items }}"
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "{{ item }}"
+      loop:
+        - teststr1
+        - teststr2
+
+#loop可以替代with_list，当处理嵌套的列表时，列表不会被拉平
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testlist:
+      - a
+      - [b,c]
+      - d
+  tasks:
+    - debug:
+        msg: "{{item}}"
+      loop: "{{testlist}}"
+
+
+#flatten过滤器可以替代with_flattened，当处理多层嵌套的列表时，列表中所有的嵌套层级都会被拉平
+#示例如下，flatten过滤器的用法在前文中已经总结过，此处不再赘述
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testlist:
+      - a
+      - [b,c]
+      - d
+  tasks:
+    - debug:
+        msg: "{{item}}"
+      loop: "{{testlist | flatten}}"
+
+
+#flatten过滤器（加参数）可以替代with_items，当处理多层嵌套的列表时，只有列表中的第一层会被拉平
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testlist:
+      - a
+      - [b,c]
+      - d
+  tasks:
+    - debug:
+        msg: "{{item}}"
+      loop: "{{testlist | flatten(levels=1)}}"
+
+
+#flatten过滤器（加参数），再配合loop_control关键字，可以替代with_indexed_items
+#当处理多层嵌套的列表时，只有列表中的第一层会被拉平，flatten过滤器的bug暂且忽略
+#示例如下，之后会对示例进行解释
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testlist:
+      - a
+      - [b,c,[e,f]]
+      - d
+  tasks:
+    - debug:
+        msg: "{{index}}--{{item}}"
+      loop: "{{testlist | flatten(levels=1)}}"
+      loop_control:
+        index_var: index
+
+#zip_longest过滤器配合list过滤器，可以替代with_together
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testlist1: [ a, b ]
+    testlist2: [ 1, 2, 3 ]
+    testlist3: [ A, B, C, D ]
+  tasks:
+    - debug:
+        msg: "{{ item.0 }} - {{ item.1 }} - {{item.2}}"
+      with_together:
+        - "{{testlist1}}"
+        - "{{testlist2}}"
+        - "{{testlist3}}"
+    - debug:
+        msg: "{{ item.0 }} - {{ item.1 }} - {{item.2}}"
+      loop: "{{ testlist1 | zip_longest(testlist2,testlist3) | list }}"
+
+
+    #当使用zip_longest过滤器代替with_together关键字时，默认也是使用”空值”与长列表中的元素进行对齐，但是也可以指定其他字符串代替”空值”，示例如下，表示使用”NoEle”代替”空值”，与长列表中的更多的元素进行对齐
+    - debug:
+        msg: "{{ item.0 }} - {{ item.1 }} - {{item.2}}"
+      loop: "{{ testlist1 | zip_longest(testlist2,testlist3,fillvalue='NoEle') | list }}"
+
+#使用最短的列表长度进行对齐zip
+    - debug:
+        msg: "{{ item.0 }} - {{ item.1 }} - {{item.2}}"
+      loop: "{{ testlist1 | zip(testlist2,testlist3) | list }}"
+
+
+#product过滤器配合list过滤器，可以替代with_nested和with_cartesian
+#如果你忘了with_nested和with_cartesian的用法，可以回顾前文
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testlist1: [ a, b, c ]
+    testlist2: [ 1, 2, 3, 4 ]
+  tasks:
+    - name : dd
+      debug:
+        msg: "{{ item.0 }}--{{ item.1 }}"
+      loop: "{{ testlist1 | product(testlist2) | list }}"
+
+
+#range过滤器配合list过滤器可以代替with_sequence
+#你可以先回顾一下with_sequence的用法，然后再测试如下示例
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "{{item}}"
+        #数字从0开始，到6结束，步长为2，但是rangge函数的操作范围不会包含结束范围，也就是说不会包含6
+      loop: "{{ range(0, 6, 2) | list }}"
+
+    - debug:
+        msg: "now {{item}}"
+      with_sequence: start=2 end=6 stride=2 format="number is %0.2f"
+
+    - debug:
+        msg: "{{ 'number is %0.2f' | format(item) }}"
+      loop: "{{ range(2, 7, 2) | list }}"
+
+
+
+
+#使用random函数可以替代with_random_choice，由于random函数是随机取出列表中的一个值，并不涉及循环操作，所以并不用使用loop关键字。
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    testlist: [ a, b, c ]
+  tasks:
+    - debug:
+        msg: "{{ testlist | random }}"
+
+
+#除了上文总结的dict2items过滤器，dictsort过滤器也可以替代with_dict
+#dictsort具有排序功能，dictsort会根据键名的字母顺序进行排序
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+      d: daisy
+      c: carol
+      a: alice
+      b: bob
+      e: ella
+  tasks:
+    - debug:
+        msg: "{{item.key}} -- {{item.value}}"
+      loop: "{{ users | dict2items }}"
+    - debug:
+        msg: "{{item.0}} -- {{item.1}}"
+      loop: "{{ users | dictsort }}"
+
+
+#subelements过滤器可以替代with_subelements
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+      - name: bob
+        gender: male
+        hobby:
+          - Skateboard
+          - VideoGame
+      - name: alice
+        gender: female
+        hobby:
+          - Music
+  tasks:
+    - debug:
+        msg: "{{item.0.name}}'s hobby is {{item.1}}"
+      with_subelements:
+        - "{{users}}"
+        - hobby
+    - debug:
+        msg: "{{item.0.name}}'s hobby is {{item.1}}"
+      loop: "{{users | subelements('hobby')}}"
+
+#pause选项能够让我们设置每次循环之后的暂停时间，以秒为单位
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "{{item}}"
+      loop:
+        - 1
+        - 2
+        - 3
+      loop_control:
+        pause: 1
+
+
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+      alice:
+        name: Alice Appleworth
+        gender: female
+        telephone: 123-456-7890
+      bob:
+        name: Bob Bananarama
+        gender: male
+        telephone: 987-654-3210
+  tasks:
+    - debug:
+        msg: "{{item.key}}"
+      loop: "{{users | dict2items}}"
+
+
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  vars:
+    users:
+      alice:
+        name: Alice Appleworth
+        gender: female
+        telephone: 123-456-7890
+      bob:
+        name: Bob Bananarama
+        gender: male
+        telephone: 987-654-3210
+  tasks:
+    - debug:
+        msg: "{{item.key}}"
+      loop: "{{users | dict2items}}"
+      loop_control:
+        #只显示出了item.key的值
+        label: "{{item.key}}"

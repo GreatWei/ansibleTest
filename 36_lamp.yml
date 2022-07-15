@@ -1,0 +1,24 @@
+# cat lamp.yml
+---
+#- hosts: localhost
+#  remote_user: root
+#  gather_facts: no
+#  tasks:
+#    - include: 36_install_MysqlAndPhp.yml
+#    - yum:
+#        name: httpd
+#        state: present
+
+
+
+# cat lamp.yml
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - include: 36_install_MysqlAndPhp.yml
+    - yum:
+        name: httpd
+        state: present
+
+- include: 36_lnmp.yml

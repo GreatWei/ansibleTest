@@ -1,0 +1,5 @@
+# cat in2.yml
+- debug:
+    msg: "task1 in in2.yml"
+- debug:
+    msg: "task2 in in2.yml"

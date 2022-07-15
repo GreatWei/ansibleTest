@@ -1,0 +1,7 @@
+# cat install_MysqlAndPhp.yml
+- yum:
+    name: mysql
+    state: present
+- yum:
+    name: php-fpm
+    state: present

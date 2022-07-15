@@ -1,0 +1,94 @@
+# cat intest.yml
+---
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "test task1"
+    - include_tasks: 37_in.yml
+    - debug:
+        msg: "test task2"
+
+# cat in.yml
+#- debug:
+#    msg: "task1 in in.yml"
+#- debug:
+#    msg: "task2 in in.yml"
+
+# cat intest.yml
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "test task1"
+    - include_tasks:
+        file: 37_in.yml
+      tags: t1
+    - debug:
+        msg: "test task2"
+
+# cat intest.yml
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "test task1"
+    - include_tasks:
+        file: 37_in.yml
+        apply:
+          tags:
+          - t1
+    - debug:
+        msg: "test task2"
+
+
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - include_tasks:
+        file: 37_in.yml
+        apply:
+          tags:
+            - t1
+      tags: always
+
+
+#apply参数中的tags能够生效，”include_tasks”的标签中必须包含always标签
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "test task"
+      tags: t0
+    - include_tasks:
+        file: 37_in.yml
+        apply:
+          tags: t1,always
+      tags: always
+
+
+
+- hosts: localhost
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - name: ddd
+      debug:
+        msg: "test task"
+      tags: t0
+    - include_tasks: 37_in.yml
+      name: ddd2
+      args:
+        apply:
+          tags: t1
+      tags: always
+
+

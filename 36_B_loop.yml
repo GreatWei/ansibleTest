@@ -1,0 +1,7 @@
+# cat B.yml
+- debug:
+    msg: "{{hello}}---{{item}}--task in B_loop.yml"
+  loop:
+    - a
+    - b
+    - c

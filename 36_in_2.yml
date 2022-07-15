@@ -1,0 +1,4 @@
+# cat in.yml
+- debug:
+    msg: "{{ item.key}} is {{ item.value.gender }}"
+  loop: "{{ users | dict2items }}"
