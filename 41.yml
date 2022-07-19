@@ -1,0 +1,8 @@
+---
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - template:
+        src: /home/zhang/Desktop/ansibleTest/41test4.j2
+        dest: /home/zhang/Desktop/ansibleTest/41test

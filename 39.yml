@@ -1,0 +1,62 @@
+---
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+  - template:
+      src: /home/zhang/Desktop/ansibleTest/39test.j2
+      dest: /home/zhang/Desktop/ansibleTest/39test
+    vars:
+      testnum: 6
+
+
+#{% if 条件 %}
+#...
+#{% else %}
+#...
+#{% endif %}
+
+
+#{% if 条件一 %}
+#...
+#{% elif 条件二 %}
+#...
+#{% elif 条件N %}
+#...
+#{% endif %}
+
+
+#{% if 条件一 %}
+#...
+#{% elif 条件N %}
+#...
+#{% else %}
+#...
+#{% endif %}
+
+# <do something> if <something is true> else <do something else>
+
+#{% for 迭代变量 in 可迭代对象 %}
+#{{ 迭代变量 }}
+#{% endfor %}
+
+#loop.index   当前循环操作为整个循环的第几次循环，序号从1开始
+#loop.index0   当前循环操作为整个循环的第几次循环，序号从0开始
+#loop.revindex  当前循环操作距离整个循环结束还有几次，序号到1结束
+#loop.revindex0 当前循环操作距离整个循环结束还有几次，序号到0结束
+#loop.first    当操作可迭代对象中的第一个元素时，此变量的值为true
+#loop.last    当操作可迭代对象中的最后一个元素时，此变量的值为true
+#loop.length   可迭代对象的长度
+#loop.depth   当使用递归的循环时，当前迭代所在的递归中的层级，层级序号从1开始
+#loop.depth0   当使用递归的循环时，当前迭代所在的递归中的层级，层级序号从0开始
+#loop.cycle()  这是一个辅助函数，通过这个函数我们可以在指定的一些值中进行轮询取值，具体参考之后的示例
+
+
+#{% set ns = namespace(found=false) %}
+#{% for item in items %}
+#    {% if item.check_something() %}
+#        {% set ns.found = true %}
+#    {% endif %}
+#    * {{ item.title }}
+#{% endfor %}
+#Found item having something: {{ ns.found }}

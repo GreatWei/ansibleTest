@@ -1,0 +1,20 @@
+# cat test.j2
+something in test.j2...
+something in test.j2...
+{% block test %}
+Some of the options that might be replaced
+{% endblock %}
+something in test.j2...
+something in test.j2...
+
+
+something in test.j2...
+
+{% block test1 %}
+something in block test
+something else in block test111
+{% endblock test1 %}
+
+{{ self.test1() }}
+
+something in test.j2...

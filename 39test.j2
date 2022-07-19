@@ -1,0 +1,143 @@
+{% if testnum > 3 %}
+greater than 3
+{% endif %}
+
+{{ 'a' if 2>1 else 'b' }}
+
+{% set teststr='abc' %}
+{{ teststr }}
+
+{% for i in [3,1,7,8,2] %}
+{{ i }}
+{% endfor %}
+
+{% for i in [6,5,5,6] -%}
+{{i}}
+{%-endfor%}
+
+{%for i in [1,5,6]%}
+{{i}}{{' '}}
+{%-endfor%}
+
+# cat test.j2
+jinja2 test
+{% for key,val in {'name':'bob','age':18}.items() %}
+{{ key ~ ':' ~ val }}
+{% endfor %}
+
+{%for i in ['d','a','c']%}
+{{i~'---'~loop.index}}
+{%endfor%}
+
+{%for i in range(3)%}
+{{i}}
+{%endfor%}
+
+range函数可以指定起始数字、结束数字、步长等，默认的起始数字为0，
+{%for i in range(1,4,2)%}
+{{i}}
+{%endfor%}
+
+
+{%for i in [3,5,7,1,9] if i>4%}
+{{i}}
+{%endfor%}
+
+{% for i in [7,1,5,3,9] %}
+  {% if i>3 %}
+    {{ i }}
+  {%endif%}
+{% endfor %}
+
+
+当使用if内联表达式时，如果不满足对应条件，则不会进入当次迭代，所以loop.index也不会进行计算，而当使用if控制语句进行判断时，其实已经进入了当次迭代，loop.index也已经进行了计算
+
+{% for i in [7,1,5,3,9] if i>3 %}
+{{ i ~'----'~ loop.index }}
+{% endfor %}
+
+{% for i in [7,1,5,3,9] %}
+{% if i>3 %}
+{{ i ~'----'~ loop.index}}
+{% endif %}
+{% endfor %}
+
+如果列表中没有任何一个元素大于10，即任何一个元素都不满足条件，则渲染else块后面的内容。
+{% for i in [7,1,5,3,9] if i>15 %}
+{{ i }}
+{%else%}
+no one is greater than 10
+{% endfor %}
+
+{%set userlist=[]%}
+{% for u in userlist %}
+  {{ u.name }}
+{%else%}
+  no one
+{% endfor %}
+
+
+{% set ns = namespace(found=false) %}
+{% for item in items %}
+    {% if item.check_something() %}
+        {% set ns.found = true %}
+    {% endif %}
+    * {{ item.title }}
+{% endfor %}
+Found item having something: {{ ns.found }}
+
+
+
+{% set dictionary={ 'name':'bob','son':{ 'name':'tom','son':{ 'name':'jerry' } } }  %}
+% set  fathername=namespace(name='') %}
+{% for key,value in dictionary.items() recursive %}
+    {{key~'---'~value}}
+
+  {% if key == 'name' %}
+    {% set  fathername.name=value %}
+      {{fathername.name}}
+      {{'fathername.name'}}
+  {% endif %}
+    {{fathername.name~'++++++'}}
+  {% if key == 'son' %}
+    {{ fathername.name ~"'s son is "~ value.name}}
+    {{ loop( value.items() ) }}
+  {% endif %}
+{% endfor %}
+
+
+{% set userlist=['Naruto','Kakashi','Sasuke','Sakura','Lee','Gaara','Itachi']  %}
+
+
+loop.cycle()”，它能够让我们在指定的一些值中进行轮询取值
+{% for u in userlist %}
+{{ u ~'----'~ loop.cycle('team1','team2','team3')}}
+{%endfor%}
+
+偶数次的循环将会跳过
+{% for i in [7,1,5,3,9] %}
+  {% if loop.index is even %}
+    {%continue%}
+  {%endif%}
+  {{ i ~'----'~ loop.index }}
+{% endfor %}
+
+
+{% for i in [7,1,5,3,9] %}
+  {% if loop.index > 3 %}
+    {%break%}
+  {%endif%}
+  {{i ~'---'~ loop.index}}
+{% endfor %}
+
+{% set testlist=[3,5] %}
+
+{% for i in testlist  %}
+  {{i}}
+{% endfor %}
+
+{%do testlist.append(7)%}
+
+{% for i in testlist  %}
+  {{i}}
+{% endfor %}

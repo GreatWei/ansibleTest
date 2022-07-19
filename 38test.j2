@@ -1,0 +1,85 @@
+
+test {{ testvar1 }} test
+
+# cat test.j2
+{{ 1 == 1 }}
+{{ 2 != 2 }}
+{{ 2 > 1 }}
+{{ 2 >= 1 }}
+{{ 2 < 1 }}
+{{ 2 <= 1 }}
+
+
+{{ (2 > 1) or (1 > 2) }}
+{{ (2 > 1) and (1 > 2) }}
+
+{{ not true }}
+{{ not True }}
+{{ not false }}
+{{ not False }}
+
+
+{{ 3 + 2 }}
+{{ 3 - 4 }}
+{{ 3 * 5 }}
+{{ 2 ** 3 }}
+{{ 7 / 5 }}
+{{ 7 // 5 }}
+{{ 17 % 5 }}
+
+{{ 1 in [1,2,3,4] }}
+{{ 1 not in [1,2,3,4] }}
+
+
+### str
+{{ 'testString' }}
+{{ "testString" }}
+### num
+{{ 15 }}
+{{ 18.8 }}
+### list
+{{ ['Aa','Bb','Cc','Dd'] }}
+{{ ['Aa','Bb','Cc','Dd'].1 }}
+{{ ['Aa','Bb','Cc','Dd'][1] }}
+### tuple
+{{ ('Aa','Bb','Cc','Dd') }}
+{{ ('Aa','Bb','Cc','Dd').0 }}
+{{ ('Aa','Bb','Cc','Dd')[0] }}
+### dic
+{{ {'name':'bob','age':18} }}
+{{ {'name':'bob','age':18}.name }}
+{{ {'name':'bob','age':18}['name'] }}
+### Boolean
+{{ True }}
+{{ true }}
+{{ False }}
+{{ false }}
+
+
+{{ 'abc' | upper }}
+
+{{ testvar1 is defined }}
+{{ testvar1 is undefined }}
+{{ '/opt' is exists }}
+{{ '/opt' is file }}
+{{ '/opt' is directory }}
+
+
+jinja2 test
+
+{{ lookup('file','/home/zhang/Desktop/ansibleTest/38testfile') }}
+
+{{ lookup('env','PATH') }}
+
+test jinja2
+
+
+jinja2 test
+{#这是一行注释信息#}
+jinja2 test
+{#
+这是多行注释信息，
+模板被渲染以后，
+最终的文件中不会包含这些信息
+#}
+jinja2 test

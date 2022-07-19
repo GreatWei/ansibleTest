@@ -1,0 +1,90 @@
+test...................
+test...................
+{% set varintest='var in test.j2' %}
+{#{% include '41test2.j2' %}#}
+{% include '41test2.j2' with context %}
+{#% include '41test2.j2' without context %#}
+{% include 'test2.j2' ignore missing with context %}
+test...................
+
+
+import的作用是在一个文件中导入其他文件中的宏
+{% import '41function_lib.j2' as funclib %}
+something in test.j2
+{{ funclib.testfunc(1,2,3) }}
+
+something in test.j2
+{{ funclib.testfunc1('aaaa') }}
+
+从’function_lib.j2’文件中将testfunc宏导入为tf宏
+从’function_lib.j2’文件中将testfunc1宏导入为tf1宏
+{% from '41function_lib.j2' import testfunc as tf, testfunc1 as tf1  %}
+something in test1.j2
+{{ tf(1,2) }}
+
+something in test1.j2
+{{ tf1('a') }}
+
+
+import和include不同，include默认会导入上下文环境，而import默认则不会，所以，如果想要让宏被import以后能够使用到对应的上下文环境，则需要显式的配置”with context”
+
+{% set outvartest='00000000' %}
+
+{% import '41function_lib.j2' as funclib with context%}
+something in test.j2
+{{ funclib.testfunc11() }}
+
+宏如果以一个或多个下划线开头，则表示这个宏为私有宏，这个宏不能被导入到其他文件中使用
+{#'funclib._test()'#}
+
+
+继承
+{% extends '41test3.j2' %}
+
+{% block test %}
+aaaaaaaaaaaaaa
+11111111111111
+{% endblock %}
+
+{% block test1%}
+aaaaaaaaaaaaaa
+{{ super() }}
+11111111111111
+{% endblock test1 %}
+
+
+
+当test1块被for循环处理时，无法在块中获取到for的循环变量造成的，如果想要在上述情况中获取到for的循环变量，则可以在块中使用scoped修饰符
+
+# cat test.j2
+something in test.j2...
+
+{%set testvar=123%}
+{% block test3 %}
+something in block test ---- {{testvar}}
+{% endblock %}
+
+{% for i in range(3) -%}
+
+{% block test4 scoped %}
+something in block test1 ---- {{i}}
+{% endblock %}
+
+{%- endfor %}
+
+something in test.j2...
+
+
+# tree
+.
+├── parent
+│    └── test.j2
+└── test1.j2
+
+# cat test1.j2
+{% extends 'parent/test.j2' %}
+
+{% block test%}
+{{ super() -}}
+11111111111111
+{% endblock test %}

@@ -1,0 +1,13 @@
+---
+- hosts: test70
+  remote_user: root
+  gather_facts: no
+  tasks:
+    - template:
+        src: /home/zhang/Desktop/ansibleTest/40test.j2
+        dest: /home/zhang/Desktop/ansibleTest/40test
+
+        # 如果有较多这样的符号都需要保持原样（不被jinja2解析）,可以借助”{% raw %}”块
+
+
+        # ansible test70 -m template -a "src=/home/zhang/Desktop/ansibleTest/40test1.j2 dest=/home/zhang/Desktop/ansibleTest/40test1 variable_start_string='((' variable_end_string='))'"

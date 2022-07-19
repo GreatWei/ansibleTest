@@ -1,0 +1,188 @@
+# cat test.j2
+{{  '{{' }}
+{{  '}}' }}
+{{ '{{ test string }}' }}
+{{ '{% test string %}' }}
+{{ '{# test string #}' }}
+
+
+{% raw %}
+  {{ test }}
+  {% test %}
+  {# test #}
+  {% if %}
+  {% for %}
+{% endraw %}
+
+# cat test.j2
+{% macro testfunc() %}
+  test string
+{% endmacro %}
+
+
+{{ testfunc() }}
+
+# cat test.j2
+{% set testvar1='teststr1' %}
+{% set testvar2=2 %}
+
+{% macro testfunc(tv1,tv2) %}
+  test string
+  {{tv1}}
+  {{tv2}}
+{% endmacro %}
+
+{{ testfunc(testvar1,testvar2) }}
+
+
+{% macro testfunc(tv1=111) %}
+  test string
+  {{tv1}}
+{% endmacro %}
+
+{{ testfunc( ) }}
+{{ testfunc(666) }}
+
+
+{% macro testfunc(tv1,tv2,tv3=3,tv4=4) %}
+  test string
+  {{tv1}}
+  {{tv2}}
+  {{tv3}}
+  {{tv4}}
+{% endmacro %}
+
+{{ testfunc( 'aa','a' ) }}
+
+{% macro testfunc(tv1,tv2=2,tv3=3) %}
+  test string
+  {{tv1}}
+  {{tv2}}
+  {{tv3}}
+{% endmacro %}
+
+{{ testfunc( 111,tv3='ccc' ) }}
+
+调用宏时，多传入几个额外的参数，这些额外的参数会作为一个元组保存在varargs变量上，我们可以通过获取varargs变量的值获取到额外传入的参数
+{% macro testfunc(testarg1=1,testarg2=2) %}
+  test string
+  {{testarg1}}
+  {{testarg2}}
+  {{varargs}}
+{% endmacro %}
+
+{{ testfunc('a','b','c','d','e') }}
+
+
+{% macro testfunc() %}
+  test string
+  {%for i in varargs%}
+  {{i}}
+  {%endfor%}
+  {{ '--------' }}
+{% endmacro %}
+
+{{ testfunc() }}
+{{ testfunc(1,2,3) }}
+
+
+kwargs变量与varargs变量的作用很像，但是kwargs变量只是针对’关键字参数’(带有参数名的关键字参数)而言的，而varargs变量是针对’非关键字参数’而言的
+{% macro testfunc(tv1='tv1') %}
+  test string
+  {{varargs}}
+  {{kwargs}}
+{% endmacro %}
+
+{{ testfunc('a',2,'test',testkeyvar='abc') }}
+
+caller可以帮助我们将宏中的内容进行替换
+{% macro testfunc() %}
+  test string
+  {{caller()}}
+{% endmacro %}
+
+{%call testfunc()%}
+something~~~~~
+something else~~~~~
+{%endcall%}
+
+
+{% macro testfunc() %}
+  test string
+  {{caller()}}
+{% endmacro %}
+
+{% macro testfunc1() %}
+  {% for i in range(3) %}
+    {{i}}
+  {% endfor %}
+{% endmacro %}
+
+{%call testfunc()%}
+{{testfunc1()}}
+{%endcall%}
+
+
+{% macro testfunc() %}
+  test string
+  {{caller('somethingElse~~')}}
+{% endmacro %}
+
+{%call(testvar) testfunc()%}
+something~~~~
+{{testvar}}
+{%endcall%}
+
+
+name属性：宏的名称。
+
+arguments属性：宏中定义的所有参数的参数名，这些参数名组成了一个元组存放在arguments中。
+
+defaults属性：宏中定义的参数如果有默认值，这些默认值组成了一个元组存放在defaults中。
+
+catch_varargs属性：如果宏中使用了varargs变量，此属性的值为true。
+
+catch_kwargs属性： 如果宏中使用了kwargs变量，此属性的值为true。
+
+caller属性：如果宏中使用了caller变量，此属性值为true。
+
+# cat test.j2
+{% macro testfunc(tv1,tv2,tv3=3,tv4=4) %}
+  test string
+  {{tv1}}
+  {{tv2}}
+  {{tv3}}
+  {{tv4}}
+{% endmacro %}
+
+  {{testfunc.name}}
+  {{testfunc.arguments}}
+  {#testfunc.defaults#}
+  {{testfunc.catch_varargs}}
+  {{testfunc.catch_kwargs}}
+  {{testfunc.caller}}
+
+{{'################################'}}
+
+{% macro testfunc1(tv1='a',tv2='b') %}
+  test string
+  {{tv1}}
+  {{tv2}}
+  {{varargs}}
+  {{kwargs}}
+{% endmacro %}
+
+  {{testfunc1.catch_varargs}}
+  {{testfunc1.catch_kwargs}}
+  {{testfunc1.caller}}
+
+{{'################################'}}
+
+{% macro testfunc2() %}
+  test string
+  {{caller()}}
+{% endmacro %}
+
+  {{testfunc2.caller}}
+
+

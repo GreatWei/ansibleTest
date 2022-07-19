@@ -1,0 +1,24 @@
+# cat test.j2
+  something in test.j2...
+  
+  {%set testvar=123%}
+  {% block test %}
+    something in block test ---- {{testvar}}
+  {% endblock %}
+  
+  {% for i in range(3) -%}
+  
+  {% block test1 scoped %}
+    something in block test1 ---- {{i}}
+  {% endblock %}
+  
+  {%- endfor %}
+    
+    something in test.j2...
+
+
+ {% extends 'testj2/test.j2' %}
+ {% block test11%}
+ {{ super() -}}
+ 11111111111111
+ {% endblock test11 %}
