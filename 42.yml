@@ -1,0 +1,5 @@
+- hosts: localhost
+  roles:
+    - role: testrole
+#      vars:
+#        testvar: "www.zsythink.net"
